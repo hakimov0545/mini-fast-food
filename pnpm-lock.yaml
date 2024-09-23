@@ -35,6 +35,9 @@ importers:
       react:
         specifier: ^18.3.1
         version: 18.3.1
+      react-awesome-reveal:
+        specifier: ^4.2.14
+        version: 4.2.14(@emotion/react@11.13.3(@types/react@18.3.5)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
@@ -1698,6 +1701,12 @@ packages:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
 
+  react-awesome-reveal@4.2.14:
+    resolution: {integrity: sha512-wknbDl+z5MIhQFfKKSj3iBJzvssqJLP8LbxQjW9OCyXPGtMSYvOFKwjG4/2p1de+qh5gqb8WBMQIYS6wVN3tNw==}
+    peerDependencies:
+      '@emotion/react': ^11.0.0
+      react: '>=16.14.0'
+
   react-dom@18.3.1:
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
     peerDependencies:
@@ -1707,6 +1716,15 @@ packages:
     resolution: {integrity: sha512-DnUk8aFbTyQPSkCfF8dbX6kQjXA9DktMeJqfjrg6cK9vwQVMxmcA3BfP4QoiztVmEHtwlTgLFsPuH2NskKT6eg==}
     peerDependencies:
       react: '*'
+
+  react-intersection-observer@9.13.1:
+    resolution: {integrity: sha512-tSzDaTy0qwNPLJHg8XZhlyHTgGW6drFKTtvjdL+p6um12rcnp8Z5XstE+QNBJ7c64n5o0Lj4ilUleA41bmDoMw==}
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -3732,6 +3750,15 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
+  react-awesome-reveal@4.2.14(@emotion/react@11.13.3(@types/react@18.3.5)(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      '@emotion/react': 11.13.3(@types/react@18.3.5)(react@18.3.1)
+      react: 18.3.1
+      react-intersection-observer: 9.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-is: 18.3.1
+    transitivePeerDependencies:
+      - react-dom
+
   react-dom@18.3.1(react@18.3.1):
     dependencies:
       loose-envify: 1.4.0
@@ -3741,6 +3768,12 @@ snapshots:
   react-icons@5.3.0(react@18.3.1):
     dependencies:
       react: 18.3.1
+
+  react-intersection-observer@9.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+    optionalDependencies:
+      react-dom: 18.3.1(react@18.3.1)
 
   react-is@16.13.1: {}
 
