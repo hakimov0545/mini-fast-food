@@ -3,18 +3,30 @@ import { Button, Divider } from "antd";
 import { IBasket, IProduct } from "@src/interface";
 import { BasketProduct } from "@components/BasketProduct";
 import queryString from "query-string";
-import { useContext } from "react";
-import { BasketContext } from "@src/App";
 import { useGetProductsQuery } from "@store/products";
 import { useNavigate } from "react-router-dom";
+import { useGetOrdersQuery } from "@src/store/orders";
+import { useSelector } from "react-redux";
+import { RootState } from "@src/store";
+import { useState } from "react";
 
 export const Basket = () => {
-	const { basket, sum } = useContext(BasketContext);
+	const user = useSelector((state: RootState) => state.auth.user);
+	const [sum, setSum] = useState(0);
+	const {
+		data: basket,
+		isLoading: basketLoading,
+		error: basketError,
+	} = useGetOrdersQuery(user?.username as string);
 	const { data: products, isLoading: ProductLoading } =
 		useGetProductsQuery(undefined);
 	const navigate = useNavigate();
 
-	if (ProductLoading) return <div>Корзина</div>;
+	if (ProductLoading || basketLoading) return <div>Корзина</div>;
+	if (basketError) {
+		console.error(basketError);
+		return <div>Корзина</div>;
+	}
 
 	return (
 		<div
@@ -34,9 +46,10 @@ export const Basket = () => {
 				<div>
 					<Divider style={{ marginBlock: "12px" }} />
 					{basket.map((b: IBasket) => {
-						const product = products.find(
+						const product: IProduct = products.find(
 							(p: IProduct) => p.id == b.productId
 						);
+						setSum(sum + b.quantity * product.price);
 						return (
 							<div key={product.id}>
 								<BasketProduct product={product} />

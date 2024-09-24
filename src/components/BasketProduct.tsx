@@ -1,10 +1,17 @@
 import { IBasket, IProduct } from "@src/interface";
+import { RootState } from "@src/store";
+import { useGetOrdersQuery } from "@src/store/orders";
+import { Alert } from "antd";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import { useContext } from "react";
-import { BasketContext } from "@src/App";
+import { useSelector } from "react-redux";
 
 export const BasketProduct = ({ product }: { product: IProduct }) => {
-	const { basket, setBasket } = useContext(BasketContext);
+	const user = useSelector((state: RootState) => state.auth.user);
+	const {
+		data: basket,
+		isLoading: basketLoading,
+		error: basketError,
+	} = useGetOrdersQuery(user?.username as string);
 	const basketProduct: IBasket = basket.find(
 		(p: IBasket) => p.productId === product.id
 	) || { productId: product.id, count: 1, price: product.price };
@@ -13,7 +20,7 @@ export const BasketProduct = ({ product }: { product: IProduct }) => {
 		id: string | number,
 		newCount: number
 	) => {
-		const updatedBasket = basket.map((item) =>
+		const updatedBasket = basket.map((item: IBasket) =>
 			item.productId === id
 				? { ...item, count: newCount }
 				: item
@@ -23,10 +30,22 @@ export const BasketProduct = ({ product }: { product: IProduct }) => {
 
 	const deleteBasketProduct = (id: string | number) => {
 		const updatedBasket = basket.filter(
-			(item) => item.productId !== id
+			(item: IBasket) => item.productId !== id
 		);
 		setBasket(updatedBasket);
 	};
+
+	if (basketLoading) return <div>Корзина</div>;
+	if (basketError) {
+		console.error(basketError);
+		return (
+			<Alert
+				message="Error fetching orders"
+				type="error"
+				closable
+			/>
+		);
+	}
 
 	return (
 		<div className="flex">
@@ -48,10 +67,10 @@ export const BasketProduct = ({ product }: { product: IProduct }) => {
 				>
 					<FaMinus
 						onClick={() => {
-							if (basketProduct.count > 1) {
+							if (basketProduct.quantity > 1) {
 								updateProductCount(
 									product.id,
-									basketProduct.count - 1
+									basketProduct.quantity - 1
 								);
 							} else {
 								deleteBasketProduct(product.id);
@@ -62,7 +81,7 @@ export const BasketProduct = ({ product }: { product: IProduct }) => {
 							cursor: "pointer",
 						}}
 					/>
-					{basketProduct.count}
+					{basketProduct.quantity}
 					<FaPlus
 						style={{
 							fontSize: "12px",
@@ -71,7 +90,7 @@ export const BasketProduct = ({ product }: { product: IProduct }) => {
 						onClick={() => {
 							updateProductCount(
 								product.id,
-								basketProduct.count + 1
+								basketProduct.quantity + 1
 							);
 						}}
 					/>

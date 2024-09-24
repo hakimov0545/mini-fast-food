@@ -18,13 +18,20 @@ export interface ICategory {
 
 export interface IBasket {
 	productId: number | string;
-	count: number;
-	price: number;
+	quantity: number;
+	userId: number | string;
+}
+
+export interface IUserRegister {
+	fullname: string;
+	username: string;
+	password: string;
+	phone: string;
 }
 
 export interface IUser {
 	fullname: string;
 	username: string;
-	password: string;
 	phone: string;
+	id: number | string;
 }

@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { IUser } from "@src/interface";
+import { IUserRegister } from "@src/interface";
 import { axiosBaseQuery } from "@store/axiosBaseQuery";
 
 export const authApi = createApi({
@@ -23,7 +23,7 @@ export const authApi = createApi({
 			}),
 		}),
 		register: builder.mutation({
-			query: (data: IUser) => ({
+			query: (data: IUserRegister) => ({
 				url: `/register`,
 				method: "post",
 				headers: {

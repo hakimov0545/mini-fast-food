@@ -1,5 +1,4 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { IProduct } from "@src/interface";
 import { axiosBaseQuery } from "@store/axiosBaseQuery";
 
 export const productsApi = createApi({
@@ -20,39 +19,8 @@ export const productsApi = createApi({
 				method: "get",
 			}),
 		}),
-		createProduct: builder.mutation({
-			query: (newProduct: IProduct) => ({
-				url: "",
-				method: "post",
-				data: newProduct,
-			}),
-		}),
-		editProduct: builder.mutation({
-			query: ({
-				id,
-				newProduct,
-			}: {
-				id: string | number;
-				newProduct: IProduct;
-			}) => ({
-				url: `/${id}`,
-				method: "patch",
-				data: newProduct,
-			}),
-		}),
-		deleteProduct: builder.mutation({
-			query: (id: string | number) => ({
-				url: `/${id}`,
-				method: "delete",
-			}),
-		}),
 	}),
 });
 
-export const {
-	useGetProductsQuery,
-	useGetProductsByCategoryQuery,
-	useCreateProductMutation,
-	useEditProductMutation,
-	useDeleteProductMutation,
-} = productsApi;
+export const { useGetProductsQuery, useGetProductsByCategoryQuery } =
+	productsApi;

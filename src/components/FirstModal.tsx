@@ -1,11 +1,17 @@
 import Title from "antd/es/typography/Title";
-import { Button, Col, Modal, Row } from "antd";
+import { Alert, Button, Col, Modal, Row } from "antd";
 import queryString from "query-string";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IProduct } from "@src/interface";
-import { useContext, useState } from "react";
-import { BasketContext } from "@src/App";
+import { IBasket, IProduct } from "@src/interface";
+import { useState } from "react";
+import {
+	useCreateOrderMutation,
+	useGetOrdersQuery,
+} from "@src/store/orders";
+import { useSelector } from "react-redux";
+import { RootState } from "@src/store";
+import { Loading } from "./Loading";
 
 export const FirstModal = ({
 	products,
@@ -19,12 +25,30 @@ export const FirstModal = ({
 	};
 
 	const [count, setCount] = useState<number>(1);
-	const { basket, setBasket } = useContext(BasketContext);
+	const user = useSelector((state: RootState) => state.auth.user);
+	const {
+		data: basket,
+		isLoading: basketLoading,
+		error: basketError,
+	} = useGetOrdersQuery(user?.username as string);
+	const [createOrder] = useCreateOrderMutation();
 
 	const params = queryString.parse(location.search, {
 		parseNumbers: true,
 		parseBooleans: true,
 	});
+
+	if (basketLoading) return <Loading />;
+	if (basketError) {
+		console.error(basketError);
+		return (
+			<Alert
+				message="Error fetching orders"
+				type="error"
+				closable
+			/>
+		);
+	}
 
 	return (
 		<Modal
@@ -73,15 +97,40 @@ export const FirstModal = ({
 												"token"
 											)
 										) {
-											setBasket([
-												...basket,
-												{
+											const existingItem =
+												basket.find(
+													(
+														basketItem: IBasket
+													) =>
+														basketItem.productId ===
+														item.id
+												);
+											if (existingItem) {
+												setBasket(
+													basket.map(
+														(
+															basketItem: IBasket
+														) =>
+															basketItem.productId ===
+															item.id
+																? {
+																		...basketItem,
+																		count:
+																			basketItem.quantity +
+																			count,
+																	}
+																: basketItem
+													)
+												);
+											} else {
+												createOrder({
+													userId: user?.id as string,
 													productId:
 														item.id,
-													count,
-													price: item.price,
-												},
-											]);
+													quantity: count,
+												});
+											}
+
 											setCount(1);
 											handleClose();
 										} else {

@@ -1,21 +1,34 @@
 import Title from "antd/es/typography/Title";
-import { Button, Form, Input } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "@src/store/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useGetUserByUsernameQuery } from "@src/store/user";
+import { Loading } from "@src/components/Loading";
+import { setCredentials } from "@src/store/authSlice";
 
 export const RegisterPage = () => {
 	const [form] = Form.useForm();
 	const navigate = useNavigate();
 	const [register] = useRegisterMutation();
+	const dispatch = useDispatch();
+	const [username, setUsername] = useState("");
+	const {
+		data: user,
+		isLoading: userLoading,
+		error: userError,
+	} = useGetUserByUsernameQuery(username);
 	const onFinish = async () => {
 		const data = form.getFieldsValue();
-
+		setUsername(data.username);
 		const res = await register(data);
-
 		if (res) {
 			localStorage.setItem("token", res.data.accessToken);
 			navigate("/");
+			dispatch(
+				setCredentials({ user, token: res.data.accessToken })
+			);
 		}
 	};
 
@@ -23,6 +36,17 @@ export const RegisterPage = () => {
 		const token = localStorage.getItem("token");
 		if (token) navigate("/");
 	}, []);
+	if (userLoading) return <Loading />;
+	if (userError) {
+		console.error(userError);
+		return (
+			<Alert
+				message="Error fetching user"
+				type="error"
+				closable
+			/>
+		);
+	}
 	return (
 		<div className="text-center flex items-center justify-center h-[100vh]">
 			<div>
