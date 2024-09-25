@@ -1,4 +1,4 @@
-import { MenuProps, message, Skeleton } from "antd";
+import { Alert, MenuProps, message, Skeleton } from "antd";
 import { Button, Col, Dropdown, Row, Typography } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { CgProfile } from "react-icons/cg";
@@ -116,12 +116,24 @@ export const HomePage = () => {
 
 	if (ProductError) {
 		console.error(ProductError);
-		return <div>Error fetching products</div>;
+		return (
+			<Alert
+				message="Error fetching products"
+				type="error"
+				closable
+			/>
+		);
 	}
 
 	if (CategoryError) {
 		console.error(CategoryError);
-		return <div>Error fetching categories</div>;
+		return (
+			<Alert
+				message="Error fetching categories"
+				type="error"
+				closable
+			/>
+		);
 	}
 
 	return (

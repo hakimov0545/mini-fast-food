@@ -58,7 +58,7 @@ export const BasketProduct = ({
 		}
 	};
 
-	if (localQuantity === 0) return <div></div>;
+	if (localQuantity === 0) return;
 
 	return (
 		<div className="flex">
