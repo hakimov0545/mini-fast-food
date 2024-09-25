@@ -19,8 +19,17 @@ export const userApi = createApi({
 				method: "get",
 			}),
 		}),
+		getUsernameExist: builder.query({
+			query: (username: string) => ({
+				url: `/exist/${username}`,
+				method: "get",
+			}),
+		}),
 	}),
 });
 
-export const { useGetUserByIdQuery, useGetUserByUsernameQuery } =
-	userApi;
+export const {
+	useGetUserByIdQuery,
+	useGetUserByUsernameQuery,
+	useGetUsernameExistQuery,
+} = userApi;

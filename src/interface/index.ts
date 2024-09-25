@@ -20,6 +20,34 @@ export interface IBasket {
 	productId: number | string;
 	quantity: number;
 	userId: number | string;
+	reason?: "APPEND" | "REMOVE";
+}
+
+export interface IBasketInfo {
+	id: number | string;
+	userId: number | string;
+	items: [
+		{
+			product: IProduct;
+			quantity: number;
+			price: number;
+		},
+	];
+	count: number;
+	total: number;
+}
+
+export interface IBasketConfirm {
+	orderId: number | string;
+	fullname: string;
+	phone: string;
+	type: "PICKUP" | "DELIVERY";
+	address?: {
+		street: string;
+		apartmentNumber: string;
+		buildingNumber: string;
+		intercom: string;
+	};
 }
 
 export interface IUserRegister {

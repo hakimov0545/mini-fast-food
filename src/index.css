@@ -5,56 +5,56 @@
 @tailwind utilities;
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: "Roboto", sans-serif;
+	margin: 0;
+	padding: 0;
+	font-family: "Roboto", sans-serif;
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+	width: 8px;
+	height: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 10px;
-    border: 1px solid transparent;
+	background-color: #888;
+	border-radius: 10px;
+	border: 1px solid transparent;
 }
 
 ::-webkit-scrollbar-button {
-    display: none;
+	display: none;
 }
 
 .custom-modal {
-    width: 100% !important;
+	width: 100% !important;
 }
 
-.modal-antd .ant-modal-content{
-    padding: 0 !important;
+.modal-antd .ant-modal-content {
+	padding: 0 !important;
 }
 
 @media (max-width: 571px) {
-    .ant-modal-content {
-        height: 100vh;
-        border-radius: 0;
-    }
+	.ant-modal-content {
+		height: 100vh;
+		border-radius: 0;
+	}
 
-    .custom-modal {
-        padding-bottom: 0;
-        margin-block: 0 !important;
-        margin-inline: 0 !important;
-        top: 0;
-    }
+	.custom-modal {
+		padding-bottom: 0;
+		margin-block: 0 !important;
+		margin-inline: 0 !important;
+		top: 0;
+	}
 }
 
 @media (min-width: 571px) and (max-width: 1024px) {
-    .custom-modal {
-        width: 524px !important;
-    }
+	.custom-modal {
+		width: 524px !important;
+	}
 }
 
 @media (min-width: 1024px) {
-    .custom-modal {
-        max-width: 684px !important;
-    }
+	.custom-modal {
+		max-width: 684px !important;
+	}
 }

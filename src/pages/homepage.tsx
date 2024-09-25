@@ -1,4 +1,4 @@
-import { MenuProps } from "antd";
+import { MenuProps, message } from "antd";
 import { Button, Col, Dropdown, Row, Typography } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { CgProfile } from "react-icons/cg";
@@ -13,6 +13,8 @@ import { useGetCategoriesQuery } from "@store/categories";
 import { Footer } from "@components/Footer";
 import { Product } from "@components/Product";
 import { Basket } from "@components/Basket";
+import { Loading } from "@src/components/Loading";
+import { Roll, Slide } from "react-awesome-reveal";
 
 export const HomePage = () => {
 	const [category, setCategory] = useState<string>();
@@ -23,8 +25,6 @@ export const HomePage = () => {
 	} = category
 		? useGetProductsByCategoryQuery(category)
 		: useGetProductsQuery(undefined);
-
-	console.log({ products });
 
 	const {
 		data: categories,
@@ -43,17 +43,23 @@ export const HomePage = () => {
 			{
 				label: "Аккаунт",
 				key: "0",
+				onClick: () => {},
 			},
 			{
-				label: "Настройки",
+				label: "Выйти",
 				key: "1",
+				onClick: () => {
+					localStorage.removeItem("token");
+					localStorage.removeItem("userId");
+					message.success("Вы вышли из аккаунта");
+				},
 			},
 		],
 		[]
 	);
 
 	if (ProductLoading || CategoryLoading) {
-		return <div>Loading</div>;
+		return <Loading />;
 	}
 
 	if (ProductError) {
@@ -97,27 +103,34 @@ export const HomePage = () => {
 
 				<Row className="my-10 lg:w-[800px]">
 					<Col sm={10} className="w-full">
-						<img
-							src="/pic.png"
-							alt=""
-							className="mx-auto"
-						/>
+						<Slide>
+							<img
+								src="/pic.png"
+								alt=""
+								className="mx-auto"
+							/>
+						</Slide>
 					</Col>
 					<Col sm={14} className="w-full flex items-center">
-						<div className="text-center sm:text-start mx-auto">
-							<Typography.Title
-								level={1}
-								style={{ color: "white" }}
-							>
-								Только самые <br />
-								<span className="text-secondary">
-									сочные бургеры!
-								</span>
-							</Typography.Title>
-							<Typography className="text-white mt-12">
-								Бесплатная доставка от 50000 sum
-							</Typography>
-						</div>
+						<Slide direction="right">
+							<div className="text-center sm:text-start mx-auto">
+								<Typography.Title
+									level={1}
+									style={{ color: "white" }}
+								>
+									Только самые <br />
+									<span className="text-secondary">
+										сочные бургеры!
+									</span>
+								</Typography.Title>
+								<Roll>
+									<Typography className="text-white mt-12">
+										Бесплатная доставка от 50000
+										sum
+									</Typography>
+								</Roll>
+							</div>
+						</Slide>
 					</Col>
 				</Row>
 			</div>

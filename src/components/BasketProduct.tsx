@@ -1,51 +1,64 @@
-import { IBasket, IProduct } from "@src/interface";
+import { useState } from "react";
+import { IProduct } from "@src/interface";
 import { RootState } from "@src/store";
-import { useGetOrdersQuery } from "@src/store/orders";
-import { Alert } from "antd";
+import { useCreateOrderMutation } from "@src/store/orders";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
-export const BasketProduct = ({ product }: { product: IProduct }) => {
-	const user = useSelector((state: RootState) => state.auth.user);
-	const {
-		data: basket,
-		isLoading: basketLoading,
-		error: basketError,
-	} = useGetOrdersQuery(user?.username as string);
-	const basketProduct: IBasket = basket.find(
-		(p: IBasket) => p.productId === product.id
-	) || { productId: product.id, count: 1, price: product.price };
+export const BasketProduct = ({
+	product,
+	quantity,
+}: {
+	product: IProduct;
+	quantity: number;
+}) => {
+	const userId =
+		useSelector((state: RootState) => state.auth.userId) ||
+		(localStorage.getItem("userId")
+			? JSON.parse(localStorage.getItem("userId") || "null")
+			: null) ||
+		null;
 
-	const updateProductCount = (
-		id: string | number,
-		newCount: number
+	const [createOrder] = useCreateOrderMutation();
+
+	const [localQuantity, setLocalQuantity] = useState(quantity);
+
+	const updateProductCount = async (
+		reason: "APPEND" | "REMOVE"
 	) => {
-		const updatedBasket = basket.map((item: IBasket) =>
-			item.productId === id
-				? { ...item, count: newCount }
-				: item
-		);
-		setBasket(updatedBasket);
+		try {
+			await createOrder({
+				productId: product.id,
+				userId,
+				quantity: 1,
+				reason,
+			});
+			if (reason === "APPEND") {
+				setLocalQuantity((prev) => prev + 1);
+			} else if (reason === "REMOVE" && localQuantity > 1) {
+				setLocalQuantity((prev) => prev - 1);
+			}
+		} catch (error) {
+			console.error("Error updating product count:", error);
+		}
 	};
 
-	const deleteBasketProduct = (id: string | number) => {
-		const updatedBasket = basket.filter(
-			(item: IBasket) => item.productId !== id
-		);
-		setBasket(updatedBasket);
+	const deleteBasketProduct = async () => {
+		try {
+			await createOrder({
+				productId: product.id,
+				userId,
+				quantity: localQuantity,
+				reason: "REMOVE",
+			});
+
+			setLocalQuantity(0);
+		} catch (error) {
+			console.error("Error deleting product:", error);
+		}
 	};
 
-	if (basketLoading) return <div>Корзина</div>;
-	if (basketError) {
-		console.error(basketError);
-		return (
-			<Alert
-				message="Error fetching orders"
-				type="error"
-				closable
-			/>
-		);
-	}
+	if (localQuantity === 0) return <div></div>;
 
 	return (
 		<div className="flex">
@@ -67,13 +80,10 @@ export const BasketProduct = ({ product }: { product: IProduct }) => {
 				>
 					<FaMinus
 						onClick={() => {
-							if (basketProduct.quantity > 1) {
-								updateProductCount(
-									product.id,
-									basketProduct.quantity - 1
-								);
+							if (localQuantity > 1) {
+								updateProductCount("REMOVE");
 							} else {
-								deleteBasketProduct(product.id);
+								deleteBasketProduct();
 							}
 						}}
 						style={{
@@ -81,17 +91,14 @@ export const BasketProduct = ({ product }: { product: IProduct }) => {
 							cursor: "pointer",
 						}}
 					/>
-					{basketProduct.quantity}
+					{localQuantity}
 					<FaPlus
 						style={{
 							fontSize: "12px",
 							cursor: "pointer",
 						}}
 						onClick={() => {
-							updateProductCount(
-								product.id,
-								basketProduct.quantity + 1
-							);
+							updateProductCount("APPEND");
 						}}
 					/>
 				</div>

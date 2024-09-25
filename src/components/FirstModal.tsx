@@ -1,5 +1,5 @@
 import Title from "antd/es/typography/Title";
-import { Alert, Button, Col, Modal, Row } from "antd";
+import { Button, Col, Modal, Row } from "antd";
 import queryString from "query-string";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -25,12 +25,15 @@ export const FirstModal = ({
 	};
 
 	const [count, setCount] = useState<number>(1);
-	const user = useSelector((state: RootState) => state.auth.user);
-	const {
-		data: basket,
-		isLoading: basketLoading,
-		error: basketError,
-	} = useGetOrdersQuery(user?.username as string);
+	const userId =
+		useSelector((state: RootState) => state.auth.userId) ||
+		(localStorage.getItem("userId")
+			? JSON.parse(localStorage.getItem("userId") || "null")
+			: null) ||
+		null;
+
+	const { data: basket, isLoading: basketLoading } =
+		useGetOrdersQuery(userId as string);
 	const [createOrder] = useCreateOrderMutation();
 
 	const params = queryString.parse(location.search, {
@@ -39,16 +42,6 @@ export const FirstModal = ({
 	});
 
 	if (basketLoading) return <Loading />;
-	if (basketError) {
-		console.error(basketError);
-		return (
-			<Alert
-				message="Error fetching orders"
-				type="error"
-				closable
-			/>
-		);
-	}
 
 	return (
 		<Modal
@@ -98,7 +91,7 @@ export const FirstModal = ({
 											)
 										) {
 											const existingItem =
-												basket.find(
+												basket?.find(
 													(
 														basketItem: IBasket
 													) =>
@@ -106,31 +99,20 @@ export const FirstModal = ({
 														item.id
 												);
 											if (existingItem) {
-												setBasket(
-													basket.map(
-														(
-															basketItem: IBasket
-														) =>
-															basketItem.productId ===
-															item.id
-																? {
-																		...basketItem,
-																		count:
-																			basketItem.quantity +
-																			count,
-																	}
-																: basketItem
-													)
-												);
+												createOrder({
+													...existingItem,
+													quantity: count,
+													reason: "APPEND",
+												});
 											} else {
 												createOrder({
-													userId: user?.id as string,
+													userId: userId as string,
 													productId:
 														item.id,
 													quantity: count,
+													reason: "APPEND",
 												});
 											}
-
 											setCount(1);
 											handleClose();
 										} else {
