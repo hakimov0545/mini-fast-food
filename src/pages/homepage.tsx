@@ -1,4 +1,4 @@
-import { MenuProps, message } from "antd";
+import { MenuProps, message, Skeleton } from "antd";
 import { Button, Col, Dropdown, Row, Typography } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { CgProfile } from "react-icons/cg";
@@ -13,7 +13,6 @@ import { useGetCategoriesQuery } from "@store/categories";
 import { Footer } from "@components/Footer";
 import { Product } from "@components/Product";
 import { Basket } from "@components/Basket";
-import { Loading } from "@src/components/Loading";
 import { Roll, Slide } from "react-awesome-reveal";
 
 export const HomePage = () => {
@@ -59,7 +58,60 @@ export const HomePage = () => {
 	);
 
 	if (ProductLoading || CategoryLoading) {
-		return <Loading />;
+		return (
+			<>
+				<div
+					style={{
+						height: "500px",
+						background: "url('/ellipse.svg')",
+						backgroundSize: "cover",
+						backgroundPosition: "top center",
+					}}
+					className="flex items-center py-7 px-5"
+				>
+					<Row className="w-[100%]">
+						<Col
+							className="w-[100%] flex justify-center sm:justify-end"
+							sm={10}
+						>
+							<Skeleton.Image
+								style={{
+									width: "100% !important",
+									height: "500px !important",
+								}}
+								active
+							/>
+						</Col>
+						<Col
+							className="w-[100%] mt-5 sm:mt-0  pl-5"
+							sm={14}
+						>
+							<Skeleton
+								className="md:w-[400px]"
+								active
+							/>
+						</Col>
+					</Row>
+				</div>
+				<div className="mx-5 mt-10 pb-2 flex justify-center gap-5">
+					<Skeleton.Button
+						active
+						shape="round"
+						className="sm:!w-[120px]"
+					/>
+					<Skeleton.Button
+						active
+						shape="round"
+						className="sm:!w-[120px]"
+					/>
+					<Skeleton.Button
+						active
+						shape="round"
+						className="sm:!w-[120px]"
+					/>
+				</div>
+			</>
+		);
 	}
 
 	if (ProductError) {
@@ -111,7 +163,10 @@ export const HomePage = () => {
 							/>
 						</Slide>
 					</Col>
-					<Col sm={14} className="w-full flex items-center">
+					<Col
+						sm={14}
+						className="w-full flex items-center justify-center"
+					>
 						<Slide direction="right">
 							<div className="text-center sm:text-start mx-auto">
 								<Typography.Title
