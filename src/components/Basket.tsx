@@ -16,11 +16,8 @@ export const Basket = () => {
 			: null) ||
 		null;
 
-	const {
-		data: basket,
-		isLoading: basketLoading,
-		error: basketError,
-	} = useGetOrdersQuery(userId as string);
+	const { data: basket, isLoading: basketLoading } =
+		useGetOrdersQuery(userId as string);
 
 	const navigate = useNavigate();
 
@@ -45,29 +42,6 @@ export const Basket = () => {
 			</>
 		);
 
-	if (basketError) {
-		console.error("basketError", basketError);
-		return (
-			<>
-				<div className="flex items-center justify-between">
-					<Title level={3}>Корзина</Title>
-					<div
-						className="bg-white w-10 h-7 flex justify-center items-center"
-						style={{ borderRadius: "10px" }}
-					>
-						0
-					</div>
-				</div>
-				<div
-					className="py-6 px-4 bg-white"
-					style={{ borderRadius: "18px" }}
-				>
-					<div>Тут пока пусто :(</div>
-				</div>
-			</>
-		);
-	}
-
 	return (
 		<div
 			className="py-6 px-4 bg-white"
@@ -79,10 +53,10 @@ export const Basket = () => {
 					className="bg-[#F2F2F3] w-10 h-5 flex justify-center"
 					style={{ borderRadius: "6px" }}
 				>
-					{basket.items.length || 0}
+					{basket?.items?.length || 0}
 				</div>
 			</div>
-			{basket.items.length ? (
+			{basket?.items?.length ? (
 				<div>
 					<Divider style={{ marginBlock: "12px" }} />
 					{basket.items.map(

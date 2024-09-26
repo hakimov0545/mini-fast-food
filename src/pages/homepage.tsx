@@ -1,4 +1,4 @@
-import { Alert, MenuProps, message, Skeleton } from "antd";
+import { MenuProps, message, Skeleton } from "antd";
 import { Button, Col, Dropdown, Row, Typography } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { CgProfile } from "react-icons/cg";
@@ -17,19 +17,12 @@ import { Roll, Slide } from "react-awesome-reveal";
 
 export const HomePage = () => {
 	const [category, setCategory] = useState<string>();
-	const {
-		data: products,
-		isLoading: ProductLoading,
-		error: ProductError,
-	} = category
+	const { data: products, isLoading: ProductLoading } = category
 		? useGetProductsByCategoryQuery(category)
 		: useGetProductsQuery(undefined);
 
-	const {
-		data: categories,
-		isLoading: CategoryLoading,
-		error: CategoryError,
-	} = useGetCategoriesQuery(undefined);
+	const { data: categories, isLoading: CategoryLoading } =
+		useGetCategoriesQuery(undefined);
 
 	useEffect(() => {
 		if (categories && categories.length > 0) {
@@ -111,28 +104,6 @@ export const HomePage = () => {
 					/>
 				</div>
 			</>
-		);
-	}
-
-	if (ProductError) {
-		console.error(ProductError);
-		return (
-			<Alert
-				message="Error fetching products"
-				type="error"
-				closable
-			/>
-		);
-	}
-
-	if (CategoryError) {
-		console.error(CategoryError);
-		return (
-			<Alert
-				message="Error fetching categories"
-				type="error"
-				closable
-			/>
 		);
 	}
 
