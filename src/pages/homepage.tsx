@@ -167,7 +167,7 @@ export const HomePage = () => {
 
 				<Row className="my-10 lg:w-[800px]">
 					<Col sm={10} className="w-full">
-						<Slide>
+						<Slide triggerOnce>
 							<img
 								src="/pic.png"
 								alt=""
@@ -179,7 +179,7 @@ export const HomePage = () => {
 						sm={14}
 						className="w-full flex items-center justify-center"
 					>
-						<Slide direction="right">
+						<Slide triggerOnce direction="right">
 							<div className="text-center sm:text-start mx-auto">
 								<Typography.Title
 									level={1}
@@ -190,7 +190,7 @@ export const HomePage = () => {
 										сочные бургеры!
 									</span>
 								</Typography.Title>
-								<Roll>
+								<Roll triggerOnce>
 									<Typography className="text-white mt-12">
 										Бесплатная доставка от 50000
 										sum

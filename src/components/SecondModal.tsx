@@ -72,7 +72,6 @@ export const SecondModal = () => {
 
 	const onFinish = () => {
 		const res = form.getFieldsValue();
-		console.log({ res });
 		const data = {
 			orderId: basket.id,
 			fullname: res.fullname,
@@ -89,6 +88,7 @@ export const SecondModal = () => {
 		try {
 			confirmOrder(data);
 			handleClose();
+			message.success("Order sent successfully");
 		} catch (error) {
 			console.error(error);
 			message.error("Error");
@@ -111,11 +111,7 @@ export const SecondModal = () => {
 					md={12}
 					className="w-[100%] bg-primary flex items-center justify-center py-24 xl:py-0"
 				>
-					<img
-						src="/img.svg"
-						alt="image"
-						// className="w-[100%]"
-					/>
+					<img src="/img.svg" alt="image" />
 				</Col>
 				<Col
 					md={12}

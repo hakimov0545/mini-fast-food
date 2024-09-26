@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { IProduct } from "@src/interface";
 import { RootState } from "@src/store";
 import { useCreateOrderMutation } from "@src/store/orders";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { message } from "antd";
 
 export const BasketProduct = ({
 	product,
@@ -21,8 +21,6 @@ export const BasketProduct = ({
 
 	const [createOrder] = useCreateOrderMutation();
 
-	const [localQuantity, setLocalQuantity] = useState(quantity);
-
 	const updateProductCount = async (
 		reason: "APPEND" | "REMOVE"
 	) => {
@@ -33,11 +31,6 @@ export const BasketProduct = ({
 				quantity: 1,
 				reason,
 			});
-			if (reason === "APPEND") {
-				setLocalQuantity((prev) => prev + 1);
-			} else if (reason === "REMOVE" && localQuantity > 1) {
-				setLocalQuantity((prev) => prev - 1);
-			}
 		} catch (error) {
 			console.error("Error updating product count:", error);
 		}
@@ -48,17 +41,16 @@ export const BasketProduct = ({
 			await createOrder({
 				productId: product.id,
 				userId,
-				quantity: localQuantity,
+				quantity,
 				reason: "REMOVE",
 			});
 
-			setLocalQuantity(0);
+			message.success("Product deleted");
 		} catch (error) {
 			console.error("Error deleting product:", error);
+			message.error("Error");
 		}
 	};
-
-	if (localQuantity === 0) return;
 
 	return (
 		<div className="flex">
@@ -80,7 +72,7 @@ export const BasketProduct = ({
 				>
 					<FaMinus
 						onClick={() => {
-							if (localQuantity > 1) {
+							if (quantity > 1) {
 								updateProductCount("REMOVE");
 							} else {
 								deleteBasketProduct();
@@ -91,7 +83,7 @@ export const BasketProduct = ({
 							cursor: "pointer",
 						}}
 					/>
-					{localQuantity}
+					{quantity}
 					<FaPlus
 						style={{
 							fontSize: "12px",

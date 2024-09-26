@@ -7,6 +7,7 @@ export const ordersApi = createApi({
 	baseQuery: axiosBaseQuery({
 		baseUrl: "http://75.101.221.235:8080/api/order",
 	}),
+	tagTypes: ["Orders"],
 	endpoints: (builder) => ({
 		getOrders: builder.query({
 			query: (id: number | string) => ({
@@ -16,6 +17,7 @@ export const ordersApi = createApi({
 					Authorization: `Bearer ${localStorage.getItem("token")}`,
 				},
 			}),
+			providesTags: ["Orders"],
 		}),
 		createOrder: builder.mutation({
 			query: (order: IBasket) => ({
@@ -26,6 +28,7 @@ export const ordersApi = createApi({
 				},
 				data: order,
 			}),
+			invalidatesTags: ["Orders"],
 		}),
 		confirmOrder: builder.mutation({
 			query: (data: IBasketConfirm) => ({
@@ -36,6 +39,7 @@ export const ordersApi = createApi({
 				},
 				data,
 			}),
+			invalidatesTags: ["Orders"],
 		}),
 	}),
 });

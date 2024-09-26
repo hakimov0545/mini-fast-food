@@ -79,7 +79,7 @@ export const Basket = () => {
 					className="bg-[#F2F2F3] w-10 h-5 flex justify-center"
 					style={{ borderRadius: "6px" }}
 				>
-					{basket?.count || 0}
+					{basket.items.length || 0}
 				</div>
 			</div>
 			{basket.items.length ? (

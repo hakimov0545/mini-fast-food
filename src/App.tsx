@@ -5,6 +5,8 @@ import { Provider } from "react-redux";
 import { store } from "@src/store";
 import { LoginPage } from "@pages/login";
 import { RegisterPage } from "@pages/register";
+import { ErrorBoundaryContainer } from "./components/ErrorBoundary";
+import { NotFound } from "./pages/notFound";
 
 function App() {
 	return (
@@ -16,19 +18,22 @@ function App() {
 					},
 				}}
 			>
-				<Provider store={store}>
-					<Routes>
-						<Route path="/" element={<HomePage />} />
-						<Route
-							path="/login"
-							element={<LoginPage />}
-						/>
-						<Route
-							path="/register"
-							element={<RegisterPage />}
-						/>
-					</Routes>
-				</Provider>
+				<ErrorBoundaryContainer>
+					<Provider store={store}>
+						<Routes>
+							<Route path="/" element={<HomePage />} />
+							<Route
+								path="/login"
+								element={<LoginPage />}
+							/>
+							<Route
+								path="/register"
+								element={<RegisterPage />}
+							/>
+							<Route path="*" element={<NotFound />} />
+						</Routes>
+					</Provider>
+				</ErrorBoundaryContainer>
 			</ConfigProvider>
 		</BrowserRouter>
 	);

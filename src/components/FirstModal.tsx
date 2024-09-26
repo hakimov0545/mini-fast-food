@@ -3,15 +3,11 @@ import { Button, Col, Modal, Row } from "antd";
 import queryString from "query-string";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IBasket, IProduct } from "@src/interface";
+import { IProduct } from "@src/interface";
 import { useState } from "react";
-import {
-	useCreateOrderMutation,
-	useGetOrdersQuery,
-} from "@src/store/orders";
+import { useCreateOrderMutation } from "@src/store/orders";
 import { useSelector } from "react-redux";
 import { RootState } from "@src/store";
-import { Loading } from "./Loading";
 
 export const FirstModal = ({
 	products,
@@ -32,8 +28,6 @@ export const FirstModal = ({
 			: null) ||
 		null;
 
-	const { data: basket, isLoading: basketLoading } =
-		useGetOrdersQuery(userId as string);
 	const [createOrder] = useCreateOrderMutation();
 
 	const params = queryString.parse(location.search, {
@@ -41,7 +35,20 @@ export const FirstModal = ({
 		parseBooleans: true,
 	});
 
-	if (basketLoading) return <Loading />;
+	const onFinish = (item: IProduct) => {
+		if (localStorage.getItem("token")) {
+			createOrder({
+				userId: userId as string,
+				productId: item.id,
+				quantity: count,
+				reason: "APPEND",
+			});
+			setCount(1);
+			handleClose();
+		} else {
+			navigate("/login");
+		}
+	};
 
 	return (
 		<Modal
@@ -85,39 +92,7 @@ export const FirstModal = ({
 									className="w-full h-8 mt-10"
 									style={{ borderRadius: "8px" }}
 									onClick={() => {
-										if (
-											localStorage.getItem(
-												"token"
-											)
-										) {
-											const existingItem =
-												basket?.find(
-													(
-														basketItem: IBasket
-													) =>
-														basketItem.productId ===
-														item.id
-												);
-											if (existingItem) {
-												createOrder({
-													...existingItem,
-													quantity: count,
-													reason: "APPEND",
-												});
-											} else {
-												createOrder({
-													userId: userId as string,
-													productId:
-														item.id,
-													quantity: count,
-													reason: "APPEND",
-												});
-											}
-											setCount(1);
-											handleClose();
-										} else {
-											navigate("/login");
-										}
+										onFinish(item);
 									}}
 								>
 									Добавить

@@ -7,12 +7,14 @@ export const categoriesApi = createApi({
 	baseQuery: axiosBaseQuery({
 		baseUrl: "http://75.101.221.235:8080/api/category",
 	}),
+	tagTypes: ["Categories"],
 	endpoints: (builder) => ({
 		getCategories: builder.query({
 			query: () => ({
 				url: "/get",
 				method: "get",
 			}),
+			providesTags: ["Categories"],
 		}),
 		createCategory: builder.mutation({
 			query: (newCategory: ICategory) => ({
@@ -20,6 +22,7 @@ export const categoriesApi = createApi({
 				method: "post",
 				data: newCategory,
 			}),
+			invalidatesTags: ["Categories"]
 		}),
 		editCategory: builder.mutation({
 			query: ({
@@ -33,12 +36,14 @@ export const categoriesApi = createApi({
 				method: "patch",
 				data: newCategory,
 			}),
+			invalidatesTags: ["Categories"]
 		}),
 		deleteCategory: builder.mutation({
 			query: (id: string | number) => ({
 				url: `/${id}`,
 				method: "delete",
 			}),
+			invalidatesTags: ["Categories"]
 		}),
 	}),
 });
