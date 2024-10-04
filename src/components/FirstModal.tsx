@@ -60,7 +60,9 @@ export const FirstModal = ({
 					(item) => item.id === params.id
 				);
 				return item ? (
-					<Title level={3}>{item.title}</Title>
+					<Title level={3} className="modal-title">
+						{item.title}
+					</Title>
 				) : (
 					"No product title"
 				);
@@ -89,7 +91,7 @@ export const FirstModal = ({
 								/>
 								<Button
 									type="primary"
-									className="w-full h-8 mt-10"
+									className="w-full h-8 mt-10 fm-dobavit"
 									style={{ borderRadius: "8px" }}
 									onClick={() => {
 										onFinish(item);

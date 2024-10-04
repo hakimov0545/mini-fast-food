@@ -79,7 +79,7 @@ export const Product = ({
 							{item.weight}г
 						</h4>
 						<Button
-							className="w-full bg-[#F2F2F3] hover:!bg-[#F2F2F3] border-0"
+							className="w-full bg-[#F2F2F3] hover:!bg-[#F2F2F3] border-0 btn-d"
 							style={{ borderRadius: "12px" }}
 							onClick={() => {
 								navigate(

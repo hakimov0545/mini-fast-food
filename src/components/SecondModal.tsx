@@ -177,7 +177,7 @@ export const SecondModal = () => {
 						)}
 						<Button
 							type="primary"
-							className="w-full h-8 mt-3"
+							className="w-full h-8 mt-3 sm-oformit"
 							style={{ borderRadius: "8px" }}
 							htmlType="submit"
 						>
