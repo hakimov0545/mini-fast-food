@@ -2,33 +2,52 @@ import { MenuProps, message, Skeleton } from "antd";
 import { Button, Col, Dropdown, Row, Typography } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { CgProfile } from "react-icons/cg";
-import { ICategory, IProduct } from "@src/interface";
-import { SecondModal } from "@components/SecondModal";
-import { FirstModal } from "@components/FirstModal";
 import {
-	useGetProductsByCategoryQuery,
-	useGetProductsQuery,
-} from "@store/products";
-import { useGetCategoriesQuery } from "@store/categories";
+	CategoriesResponse,
+	ICategory,
+	IProduct,
+	ProductsResponse,
+} from "@src/interface";
+import { FirstModal } from "@components/FirstModal";
 import { Footer } from "@components/Footer";
 import { Product } from "@components/Product";
 import { Basket } from "@components/Basket";
 import { Roll, Slide } from "react-awesome-reveal";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@src/api";
 
 export const HomePage = () => {
 	const [category, setCategory] = useState<string>();
-	const { data: products, isLoading: ProductLoading } = category
-		? useGetProductsByCategoryQuery(category)
-		: useGetProductsQuery(undefined);
+	const [products, setProducts] = useState<IProduct[]>();
+	const { data: productsData, isLoading: ProductLoading } =
+		useQuery<ProductsResponse>(["products"], async () => {
+			const res = await api.get("/products?populate=*");
+			return res.data;
+		});
 
 	const { data: categories, isLoading: CategoryLoading } =
-		useGetCategoriesQuery(undefined);
+		useQuery<CategoriesResponse>(["categories"], async () => {
+			const res = await api.get("/categories?populate=*");
+			return res.data;
+		});
 
 	useEffect(() => {
-		if (categories && categories.length > 0) {
-			setCategory(categories[0].title);
+		if (categories && categories.data.length > 0) {
+			setCategory(categories?.data[0].documentId);
 		}
 	}, [categories]);
+
+	useEffect(() => {
+		if (productsData?.data) setProducts(productsData?.data);
+	}, [productsData]);
+
+	useEffect(() => {
+		const res = productsData?.data.filter(
+			(i) => i.category.documentId === category
+		);
+
+		setProducts(res);
+	}, [category]);
 
 	const items: MenuProps["items"] = useMemo(
 		() => [
@@ -163,8 +182,7 @@ export const HomePage = () => {
 								</Typography.Title>
 								<Roll triggerOnce>
 									<Typography className="text-white mt-12">
-										Бесплатная доставка от 50000
-										sum
+										Бесплатная доставка от 5$
 									</Typography>
 								</Roll>
 							</div>
@@ -178,34 +196,38 @@ export const HomePage = () => {
 					overflowX: "auto",
 				}}
 			>
-				{categories.map((c: ICategory, index: number) => (
-					<div
-						key={index}
-						onClick={() => {
-							setCategory(c.title);
-						}}
-						className={
-							c.title === category
-								? "bg-primary text-white"
-								: "bg-white"
-						}
-						style={{
-							borderRadius: "24px",
-							paddingLeft: "20px",
-							paddingRight: "40px",
-							marginInline: "12px",
-							height: "40px",
-							textWrap: "nowrap",
-							cursor: "pointer",
-							display: "flex",
-							alignItems: "center",
-							gap: "8px",
-						}}
-					>
-						<img src={c.icon} alt="" />
-						<p>{c.title}</p>
-					</div>
-				))}
+				{categories?.data.map(
+					(c: ICategory, index: number) => (
+						<div
+							key={index}
+							onClick={() => {
+								setCategory(c.documentId);
+							}}
+							className={
+								c.documentId === category
+									? "bg-primary text-white"
+									: "bg-white"
+							}
+							style={{
+								borderRadius: "24px",
+								paddingInline: "20px",
+								marginInline: "12px",
+								height: "40px",
+								textWrap: "nowrap",
+								cursor: "pointer",
+								display: "flex",
+								alignItems: "center",
+								gap: "8px",
+							}}
+						>
+							{/* <img
+								src={`http://localhost:1337/${c.icon.url}`}
+								alt=""
+							/> */}
+							<p>{c.title}</p>
+						</div>
+					)
+				)}
 			</div>
 			<div className="container my-10 mx-auto px-5">
 				<Row gutter={20}>
@@ -221,7 +243,7 @@ export const HomePage = () => {
 							{products?.map(
 								(item: IProduct, index: number) => (
 									<Product
-										key={item.id}
+										key={item.documentId}
 										item={item}
 										index={index}
 										loading={ProductLoading}
@@ -233,8 +255,7 @@ export const HomePage = () => {
 				</Row>
 			</div>
 			<Footer />
-			<FirstModal products={products} />
-			<SecondModal />
+			<FirstModal products={products as IProduct[]} />
 		</div>
 	);
 };

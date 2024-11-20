@@ -1,34 +1,41 @@
 import Title from "antd/es/typography/Title";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useLoginMutation } from "@src/store/auth";
 import { useEffect } from "react";
-import { setCredentials } from "@src/store/authSlice";
-import { useDispatch } from "react-redux";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "@src/api";
 
 export const LoginPage = () => {
 	const [form] = Form.useForm();
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
 
-	const [login] = useLoginMutation();
+	const { mutate: login } = useMutation(
+		(data: { identifier: string; password: string }) => {
+			return api.post(`/auth/local`, data);
+		},
+		{
+			onSuccess: (res) => {
+				console.log({ res });
+
+				localStorage.setItem("token", res.data.jwt);
+				localStorage.setItem(
+					"userId",
+					JSON.stringify(res.data.user.id)
+				);
+				navigate("/");
+			},
+			onError: (error) => {
+				message.error(
+					"Login failed. Please check your credentials."
+				);
+				console.error(error);
+			},
+		}
+	);
+
 	const onFinish = async () => {
 		const data = form.getFieldsValue();
-		const res = await login(data);
-		if (res) {
-			localStorage.setItem("token", res.data.accessToken);
-			localStorage.setItem(
-				"userId",
-				JSON.stringify(res.data.userId)
-			);
-			navigate("/");
-			dispatch(
-				setCredentials({
-					userId: res.data.userId,
-					token: res.data.accessToken,
-				})
-			);
-		}
+		login(data);
 	};
 
 	useEffect(() => {
@@ -46,7 +53,7 @@ export const LoginPage = () => {
 					onFinish={onFinish}
 				>
 					<Form.Item
-						name="username"
+						name="identifier"
 						label="Username"
 						rules={[
 							{

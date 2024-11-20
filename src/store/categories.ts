@@ -22,7 +22,7 @@ export const categoriesApi = createApi({
 				method: "post",
 				data: newCategory,
 			}),
-			invalidatesTags: ["Categories"]
+			invalidatesTags: ["Categories"],
 		}),
 		editCategory: builder.mutation({
 			query: ({
@@ -36,14 +36,14 @@ export const categoriesApi = createApi({
 				method: "patch",
 				data: newCategory,
 			}),
-			invalidatesTags: ["Categories"]
+			invalidatesTags: ["Categories"],
 		}),
 		deleteCategory: builder.mutation({
 			query: (id: string | number) => ({
 				url: `/${id}`,
 				method: "delete",
 			}),
-			invalidatesTags: ["Categories"]
+			invalidatesTags: ["Categories"],
 		}),
 	}),
 });

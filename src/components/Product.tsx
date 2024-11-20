@@ -58,13 +58,13 @@ export const Product = ({
 				) : (
 					<>
 						<img
-							src={item.image}
+							src={`http://localhost:1337/${item.image.url}`}
 							alt=""
 							className="w-full min-h-[100px] sm:h-[200px] md:h-[160px] xl:h-[220px]"
 							style={{ borderRadius: "12px" }}
 						/>
 						<Title level={3} className="mt-2">
-							{item.price} sum
+							{item.price} $
 						</Title>
 						<h3
 							className="mb-7"
@@ -86,7 +86,7 @@ export const Product = ({
 									"?" +
 										queryString.stringify({
 											add: true,
-											id: item.id,
+											id: item.documentId,
 										})
 								);
 							}}
